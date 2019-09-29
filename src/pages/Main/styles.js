@@ -68,8 +68,16 @@ export const List = styled.ul`
       border-top: 1px solid #eee;
     }
   }
+
   a {
     color: #7159c1;
     text-decoration: none;
+  }
+
+  button {
+    color: #7159c1;
+    border: none;
+    background: none;
+    margin-left: 10px;
   }
 `;

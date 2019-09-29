@@ -49,9 +49,6 @@ export default class Main extends Component {
         name: response.data.full_name,
       };
 
-      console.log(data.name);
-      console.log(repositories.find(repo => repo.name === data.name));
-
       if (repositories.find(repo => repo.name === data.name)) {
         throw new Error('Repository duplicated');
       }
@@ -62,8 +59,19 @@ export default class Main extends Component {
       });
       this.setState({ loading: false, inputError: false });
     } catch (error) {
+      this.setState({
+        newRepo: '',
+      });
       this.setState({ loading: false, inputError: true });
     }
+  };
+
+  handleDelete = repo => {
+    const { repositories } = this.state;
+
+    this.setState({
+      repositories: repositories.filter(r => r !== repo),
+    });
   };
 
   render() {
@@ -94,9 +102,14 @@ export default class Main extends Component {
           {repositories.map(repo => (
             <li key={repo.name}>
               <span>{repo.name}</span>
-              <Link to={`/repository/${encodeURIComponent(repo.name)}`}>
-                Details
-              </Link>
+              <div>
+                <Link to={`/repository/${encodeURIComponent(repo.name)}`}>
+                  Details
+                </Link>
+                <button type="button" onClick={() => this.handleDelete(repo)}>
+                  Remove
+                </button>
+              </div>
             </li>
           ))}
         </List>
