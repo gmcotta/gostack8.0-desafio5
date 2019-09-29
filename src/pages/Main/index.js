@@ -49,6 +49,13 @@ export default class Main extends Component {
         name: response.data.full_name,
       };
 
+      console.log(data.name);
+      console.log(repositories.find(repo => repo.name === data.name));
+
+      if (repositories.find(repo => repo.name === data.name)) {
+        throw new Error('Repository duplicated');
+      }
+
       this.setState({
         newRepo: '',
         repositories: [...repositories, data],
