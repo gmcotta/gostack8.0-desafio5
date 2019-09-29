@@ -14,6 +14,7 @@ export default class Main extends Component {
     newRepo: '',
     repositories: [],
     loading: false,
+    inputError: false,
   };
 
   componentDidMount() {
@@ -41,22 +42,25 @@ export default class Main extends Component {
 
     e.preventDefault();
 
-    const response = await api.get(`/repos/${newRepo}`);
+    try {
+      const response = await api.get(`/repos/${newRepo}`);
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const data = {
+        name: response.data.full_name,
+      };
 
-    this.setState({
-      newRepo: '',
-      repositories: [...repositories, data],
-    });
-
-    this.setState({ loading: false });
+      this.setState({
+        newRepo: '',
+        repositories: [...repositories, data],
+      });
+      this.setState({ loading: false, inputError: false });
+    } catch (error) {
+      this.setState({ loading: false, inputError: true });
+    }
   };
 
   render() {
-    const { newRepo, repositories, loading } = this.state;
+    const { newRepo, repositories, loading, inputError } = this.state;
 
     return (
       <Container>
@@ -64,7 +68,7 @@ export default class Main extends Component {
           <FaGithubAlt />
           Repositories
         </h1>
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} error={inputError}>
           <input
             type="text"
             placeholder="Add repository"

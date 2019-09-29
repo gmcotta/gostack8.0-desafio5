@@ -41,9 +41,6 @@ export default class Repository extends Component {
       issues: issues.data,
       loading: false,
     });
-
-    console.log(repository);
-    console.log(issues);
   }
 
   render() {
