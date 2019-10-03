@@ -44,7 +44,6 @@ export const Owner = styled.header`
 
 export const IssueList = styled.ul`
   padding-top: 30px;
-  margin-top: 30px;
   border-top: 1px solid #eee;
   list-style: none;
 
@@ -97,5 +96,94 @@ export const IssueList = styled.ul`
       font-size: 12px;
       color: #999;
     }
+  }
+`;
+
+export const FilterMenu = styled.div`
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 0;
+
+  button {
+    color: #7159c1;
+    background: none;
+    border: none;
+    margin-left: 10px;
+  }
+
+  button.first {
+    cursor: ${props => (props.firstPage ? 'not-allowed' : 'pointer')};
+    opacity: ${props => (props.firstPage ? 0.6 : 'none')};
+  }
+
+  button.all {
+    color: ${props => (props.githubPage === 'all' ? '#fff' : '#7159c1')};
+    border: 1px solid #7159c1;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: ${props =>
+      props.githubPage === 'all' ? 'rgb(113,89,193)' : 'none'};
+    cursor: ${props =>
+      props.githubPage === 'all' ? 'not-allowed' : 'pointer'};
+    opacity: ${props => (props.githubPage === 'all' ? 0.6 : 'none')};
+  }
+
+  button.open {
+    color: ${props => (props.githubPage === 'open' ? '#fff' : '#7159c1')};
+    border: 1px solid #7159c1;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: ${props =>
+      props.githubPage === 'open' ? 'rgb(113,89,193)' : 'none'};
+    cursor: ${props =>
+      props.githubPage === 'open' ? 'not-allowed' : 'pointer'};
+    opacity: ${props => (props.githubPage === 'all' ? 0.6 : 'none')};
+  }
+
+  button.closed {
+    color: ${props => (props.githubPage === 'closed' ? '#fff' : '#7159c1')};
+    color: #fff;
+    border: 1px solid #7159c1;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: ${props =>
+      props.githubPage === 'closed' ? 'rgb(113,89,193)' : 'none'};
+    cursor: ${props =>
+      props.githubPage === 'closed' ? 'not-allowed' : 'pointer'};
+    opacity: ${props => (props.githubPage === 'all' ? 0.6 : 'none')};
+  }
+
+  span {
+    color: #7159c1;
+    margin-left: 10px;
+  }
+`;
+
+export const Footer = styled.div`
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-self: center;
+  justify-content: space-around;
+  padding: 10px 0;
+
+  button {
+    color: #7159c1;
+    background: none;
+    border: none;
+    margin-left: 10px;
+  }
+
+  button.first {
+    cursor: ${props => (props.firstPage ? 'not-allowed' : 'pointer')};
+    opacity: ${props => (props.firstPage ? 0.6 : 'none')};
+  }
+
+  span {
+    color: #7159c1;
+    margin-left: 10px;
   }
 `;

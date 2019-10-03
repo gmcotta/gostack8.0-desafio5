@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 import Container from '../../components/Container/index';
-import { Loading, Owner, IssueList } from './styles';
+import { Loading, Owner, IssueList, FilterMenu, Footer } from './styles';
 
 export default class Repository extends Component {
   static propTypes = {
@@ -19,19 +19,29 @@ export default class Repository extends Component {
     repository: {},
     issues: [],
     loading: true,
+    githubState: 'all',
+    page: 1,
+    firstPage: true,
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.showIssues();
+  }
+
+  showIssues = async () => {
     const { match } = this.props;
 
     const repoName = decodeURIComponent(match.params.repository);
+
+    const { githubState, page } = this.state;
 
     const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: 'open',
-          per_page: 5,
+          state: githubState,
+          per_page: 10,
+          page,
         },
       }),
     ]);
@@ -41,13 +51,70 @@ export default class Repository extends Component {
       issues: issues.data,
       loading: false,
     });
-  }
+    console.log(this.state);
+  };
+
+  handlePrevPage = async () => {
+    const { page } = this.state;
+    if (page > 1) {
+      await this.setState({
+        firstPage: false,
+        page: page - 1,
+      });
+      this.showIssues();
+    } else {
+      await this.setState({
+        firstPage: true,
+      });
+    }
+  };
+
+  handleNextPage = async () => {
+    const { page } = this.state;
+    await this.setState({
+      page: page + 1,
+    });
+    this.showIssues();
+  };
+
+  handleAllOption = async () => {
+    await this.setState({
+      githubState: 'all',
+      page: 1,
+    });
+    this.showIssues();
+  };
+
+  handleOpenOption = async () => {
+    await this.setState({
+      githubState: 'open',
+      page: 1,
+    });
+    this.showIssues();
+  };
+
+  handleClosedOption = async () => {
+    await this.setState({
+      githubState: 'closed',
+      page: 1,
+    });
+    this.showIssues();
+  };
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const {
+      repository,
+      issues,
+      loading,
+      page,
+      firstPage,
+      githubState,
+    } = this.state;
+
     if (loading) {
-      return <Loading>Carregando...</Loading>;
+      return <Loading>Loading...</Loading>;
     }
+
     return (
       <Container>
         <Owner>
@@ -56,6 +123,45 @@ export default class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
+
+        <FilterMenu firstPage={firstPage} githubState={githubState}>
+          <div>
+            <button
+              className="all"
+              type="button"
+              onClick={() => this.handleAllOption()}
+            >
+              All
+            </button>
+            <button
+              className="open"
+              type="button"
+              onClick={() => this.handleOpenOption()}
+            >
+              Open
+            </button>
+            <button
+              className="closed"
+              type="button"
+              onClick={() => this.handleClosedOption()}
+            >
+              Closed
+            </button>
+          </div>
+          <div>
+            <button
+              className="first"
+              type="button"
+              onClick={() => this.handlePrevPage()}
+            >
+              Prev Page
+            </button>
+            <span>{page}</span>
+            <button type="button" onClick={() => this.handleNextPage()}>
+              Next Page
+            </button>
+          </div>
+        </FilterMenu>
 
         <IssueList>
           {issues.map(issue => (
@@ -74,6 +180,22 @@ export default class Repository extends Component {
             </li>
           ))}
         </IssueList>
+
+        <Footer firstPage={firstPage}>
+          <div>
+            <button
+              className="first"
+              type="button"
+              onClick={() => this.handlePrevPage()}
+            >
+              Prev Page
+            </button>
+            <span>{page}</span>
+            <button type="button" onClick={() => this.handleNextPage()}>
+              Next Page
+            </button>
+          </div>
+        </Footer>
       </Container>
     );
   }
