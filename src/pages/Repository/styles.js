@@ -120,40 +120,30 @@ export const FilterMenu = styled.div`
   }
 
   button.all {
-    color: ${props => (props.githubPage === 'all' ? '#fff' : '#7159c1')};
+    color: ${props => (props.all ? '#fff' : '#7159c1')};
     border: 1px solid #7159c1;
     border-radius: 5px;
     padding: 5px;
-    background-color: ${props =>
-      props.githubPage === 'all' ? 'rgb(113,89,193)' : 'none'};
-    cursor: ${props =>
-      props.githubPage === 'all' ? 'not-allowed' : 'pointer'};
-    opacity: ${props => (props.githubPage === 'all' ? 0.6 : 'none')};
+    background-color: ${props => (props.all ? 'rgb(113,89,193)' : 'none')};
+    cursor: ${props => (props.all ? 'not-allowed' : 'pointer')};
   }
 
   button.open {
-    color: ${props => (props.githubPage === 'open' ? '#fff' : '#7159c1')};
+    color: ${props => (props.open ? '#fff' : '#7159c1')};
     border: 1px solid #7159c1;
     border-radius: 5px;
     padding: 5px;
-    background-color: ${props =>
-      props.githubPage === 'open' ? 'rgb(113,89,193)' : 'none'};
-    cursor: ${props =>
-      props.githubPage === 'open' ? 'not-allowed' : 'pointer'};
-    opacity: ${props => (props.githubPage === 'all' ? 0.6 : 'none')};
+    background-color: ${props => (props.open ? 'rgb(113,89,193)' : 'none')};
+    cursor: ${props => (props.open ? 'not-allowed' : 'pointer')};
   }
 
   button.closed {
-    color: ${props => (props.githubPage === 'closed' ? '#fff' : '#7159c1')};
-    color: #fff;
+    color: ${props => (props.closed ? '#fff' : '#7159c1')};
     border: 1px solid #7159c1;
     border-radius: 5px;
     padding: 5px;
-    background-color: ${props =>
-      props.githubPage === 'closed' ? 'rgb(113,89,193)' : 'none'};
-    cursor: ${props =>
-      props.githubPage === 'closed' ? 'not-allowed' : 'pointer'};
-    opacity: ${props => (props.githubPage === 'all' ? 0.6 : 'none')};
+    background-color: ${props => (props.closed ? 'rgb(113,89,193)' : 'none')};
+    cursor: ${props => (props.closed ? 'not-allowed' : 'pointer')};
   }
 
   span {

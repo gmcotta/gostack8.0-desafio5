@@ -20,6 +20,9 @@ export default class Repository extends Component {
     issues: [],
     loading: true,
     githubState: 'all',
+    all: true,
+    open: false,
+    closed: false,
     page: 1,
     firstPage: true,
   };
@@ -33,7 +36,7 @@ export default class Repository extends Component {
 
     const repoName = decodeURIComponent(match.params.repository);
 
-    const { githubState, page } = this.state;
+    const { page, githubState } = this.state;
 
     const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
@@ -55,31 +58,90 @@ export default class Repository extends Component {
   };
 
   handlePrevPage = async () => {
-    const { page } = this.state;
+    const { page, githubState } = this.state;
+    const { match } = this.props;
+    const repoName = decodeURIComponent(match.params.repository);
+
     if (page > 1) {
-      await this.setState({
+      const [repository, issues] = await Promise.all([
+        api.get(`/repos/${repoName}`),
+        api.get(`/repos/${repoName}/issues`, {
+          params: {
+            state: githubState,
+            firstPage: false,
+            per_page: 10,
+            page: page - 1,
+          },
+        }),
+      ]);
+
+      this.setState({
+        repository: repository.data,
+        issues: issues.data,
         firstPage: false,
+        loading: false,
         page: page - 1,
       });
-      this.showIssues();
+      console.log(this.state);
     } else {
-      await this.setState({
+      const [repository, issues] = await Promise.all([
+        api.get(`/repos/${repoName}`),
+        api.get(`/repos/${repoName}/issues`, {
+          params: {
+            state: githubState,
+            firstPage: true,
+            per_page: 10,
+            page,
+          },
+        }),
+      ]);
+
+      this.setState({
+        repository: repository.data,
+        issues: issues.data,
         firstPage: true,
+        loading: false,
+        page,
       });
     }
   };
 
   handleNextPage = async () => {
     const { page } = this.state;
-    await this.setState({
+    const { match } = this.props;
+
+    const repoName = decodeURIComponent(match.params.repository);
+
+    const { githubState } = this.state;
+
+    const [repository, issues] = await Promise.all([
+      api.get(`/repos/${repoName}`),
+      api.get(`/repos/${repoName}/issues`, {
+        params: {
+          state: githubState,
+          firstPage: false,
+          per_page: 10,
+          page: page + 1,
+        },
+      }),
+    ]);
+
+    this.setState({
+      repository: repository.data,
+      issues: issues.data,
+      firstPage: false,
+      loading: false,
       page: page + 1,
     });
-    this.showIssues();
+    console.log(this.state);
   };
 
   handleAllOption = async () => {
     await this.setState({
       githubState: 'all',
+      all: true,
+      open: false,
+      closed: false,
       page: 1,
     });
     this.showIssues();
@@ -88,6 +150,9 @@ export default class Repository extends Component {
   handleOpenOption = async () => {
     await this.setState({
       githubState: 'open',
+      all: false,
+      open: true,
+      closed: false,
       page: 1,
     });
     this.showIssues();
@@ -96,6 +161,9 @@ export default class Repository extends Component {
   handleClosedOption = async () => {
     await this.setState({
       githubState: 'closed',
+      all: false,
+      open: false,
+      closed: true,
       page: 1,
     });
     this.showIssues();
@@ -108,7 +176,9 @@ export default class Repository extends Component {
       loading,
       page,
       firstPage,
-      githubState,
+      all,
+      open,
+      closed,
     } = this.state;
 
     if (loading) {
@@ -124,7 +194,7 @@ export default class Repository extends Component {
           <p>{repository.description}</p>
         </Owner>
 
-        <FilterMenu firstPage={firstPage} githubState={githubState}>
+        <FilterMenu firstPage={firstPage} all={all} open={open} closed={closed}>
           <div>
             <button
               className="all"
